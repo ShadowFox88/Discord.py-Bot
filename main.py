@@ -306,7 +306,7 @@ async def shop(ctx):
         price = item["price"]
         desc = item["description"]
         shop.add_field(
-            name=f'{name}', value=f'{price} :moneybag: | {desc}', inline=True)
+            name=f'{name}', value=f'{price} <a:IBEgetMoney:780141666261663755> | {desc}', inline=True)
 
     await ctx.channel.send(embed=shop)
 
@@ -340,11 +340,11 @@ async def beg(ctx):
 
     fine = random.randrange(500)
 
-    c1 = f'You found {earnings} :moneybag: on the ground'
+    c1 = f'You found {earnings} <a:IBEgetMoney:780141666261663755> on the ground'
 
-    c2 = f"You found {earnings} :moneybag: in a bin"
+    c2 = f"You found {earnings} <a:IBEgetMoney:780141666261663755> in a bin"
 
-    c3 = f'You were caught stealing {earnings} :moneybag: from a wallet\nThe police have given you a fine of {fine} :moneybag:'
+    c3 = f'You were caught stealing {earnings} <a:IBEgetMoney:780141666261663755> from a wallet\nThe police have given you a fine of {fine} <a:IBEgetMoney:780141666261663755>'
 
     pos = [c1, c2, c3]
 
@@ -398,7 +398,7 @@ async def work(ctx):
         await channel.send('Your employer was busy and had to go')
     else:
         await asyncio.sleep(1)
-        await channel.send(f'Well done! You earned `{job1_earnings}` :moneybag: .Your employer = `The local Police Force`')
+        await channel.send(f'Well done! You earned `{job1_earnings}` <a:IBEgetMoney:780141666261663755> .Your employer = `The local Police Force`')
         users[str(ctx.author.id)]['wallet'] += job1_earnings
 
     try:
@@ -408,7 +408,7 @@ async def work(ctx):
         await channel.send('Your employer was busy and had to go')
     else:
         await asyncio.sleep(1)
-        await channel.send(f'Well done! You earned `{job2_earnings}` :moneybag: .Your employer = `The local Construction Team`')
+        await channel.send(f'Well done! You earned `{job2_earnings}` <a:IBEgetMoney:780141666261663755> .Your employer = `The local Construction Team`')
         users[str(ctx.author.id)]['wallet'] += job2_earnings
 
     with open('bank.json', 'w') as f:
@@ -435,7 +435,7 @@ async def withdraw(ctx, amount=None):
     await update_bank(ctx.message.author, amount)
     await update_bank(ctx.message.author, -1 * amount, 'bank')
 
-    await ctx.send(f"You withdrew {amount} :moneybag: from your Bank")
+    await ctx.send(f"You withdrew {amount} <a:IBEgetMoney:780141666261663755> from your Bank")
 
 
 @bot.command()
@@ -458,7 +458,7 @@ async def deposit(ctx, amount=None):
     await update_bank(ctx.message.author, -1 * amount)
     await update_bank(ctx.message.author, amount, 'bank')
 
-    await ctx.send(f"You deposited {amount} :moneybag: to your Bank")
+    await ctx.send(f"You deposited {amount} <a:IBEgetMoney:780141666261663755> to your Bank")
 
 
 @bot.command()
@@ -484,7 +484,7 @@ async def transfer(ctx, member: discord.Member, amount=None):
     await update_bank(ctx.message.author, -1 * amount, 'bank')
     await update_bank(member, amount, 'bank')
 
-    await ctx.send(f"You donated {amount} :moneybag: to {member.mention}")
+    await ctx.send(f"You donated {amount} <a:IBEgetMoney:780141666261663755> to {member.mention}")
 
 
 @bot.command()
@@ -507,7 +507,7 @@ async def slots(ctx, amount=None):
     final = []
     for i in range(3):
         print(i)
-        options = [":money_with_wings:", ":x:", ":money_with_wings:"]
+        options = [":<a:IBEgetMoney:780141666261663755>:", ":x:", ":<a:IBEgetMoney:780141666261663755>:"]
         a = random.choice(options)
 
         final.append(a)
@@ -538,7 +538,7 @@ async def rob(ctx, member: discord.Member):
     await update_bank(ctx.message.author, earnings)
     await update_bank(member, -1 * earnings, 'bank')
 
-    await ctx.send(f"You robbed {member.mention} and received {earnings} :moneybag: into your wallet!")
+    await ctx.send(f"You robbed {member.mention} and received {earnings} <a:IBEgetMoney:780141666261663755> into your wallet!")
 
 
 async def open_account(user):
