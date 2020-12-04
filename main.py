@@ -4,14 +4,14 @@ from discord.ext import commands
 import random
 import json
 import discord
-from webserver import keep_alive
 
+intents = discord.Intents.all()
 def get_prefix(bot, ctx):
     with open(r"prefixes.json", "r") as f:
         prefixes = json.load(f)
     return prefixes[str(ctx.guild.id)]
 
-bot = commands.Bot(command_prefix=get_prefix, case_insensitive=True)
+bot = commands.Bot(command_prefix=get_prefix, case_insensitive=True, intents=intents)
 #bot.remove_command('help')
 
 mainshop = [{"name": "Stick", "price": 1, "description": "Playing"},
@@ -26,6 +26,8 @@ mainshop = [{"name": "Stick", "price": 1, "description": "Playing"},
 async def on_ready():
     print('Token = Connected')
     print('Economy = Connected')
+    import os
+    os.system(r'set path = %path%;C:\Users\Vahin\AppData\Roaming\npm;')
 
 async def ch_pr():
     await bot.wait_until_ready()
@@ -46,7 +48,7 @@ bot.loop.create_task(ch_pr())
 @commands.is_owner()
 async def reset(ctx, member: discord.Member):
 
-    if ctx.message.author.id == 733324089334431826:
+    if ctx.message.author.id == 606648465065246750:
         user = member
 
         await open_account(member)
@@ -55,8 +57,8 @@ async def reset(ctx, member: discord.Member):
 
         users[str(user.id)]['wallet'] = 0
         users[str(user.id)]['bank'] = 0
-
-        await ctx.channel.send(f'{ctx.author.mention} reset {member.mention}')
+        embed = discord.Embed(title='Success', description=f'You have reset {member.mention}!')
+        await ctx.channel.send(embed=embed)
 
     with open('bank.json', 'w') as f:
         json.dump(users, f)
@@ -85,37 +87,7 @@ async def auto(ctx):
         json.dump(users, f)
 '''
 
-@bot.command()
-async def money(ctx):
-    mll = discord.Embed(
-        title='Support', description='List of Commands', color=discord.Color.dark_green())
-    mll.add_field(name='Leaderboard [number (default = 1)]', value='Shows top ranked user based on their <a:IBEgetMoney:780141666261663755>', inline=False)
-    mll.add_field(name='----------------------------------', value='Next Command', inline=False)
-    mll.add_field(name='Sell <item> <amount>', value='Sell an item and earn some <a:IBEgetMoney:780141666261663755>', inline=False)
-    mll.add_field(name='----------------------------------', value='Next Command', inline=False)
-    mll.add_field(name='Buy <item> <amount>', value='Buy an item buy it will cost you <a:IBEgetMoney:780141666261663755>!', inline=False)
-    mll.add_field(name='----------------------------------', value='Next Command', inline=False)
-    mll.add_field(name='Shop <item> <amount>', value='Shows buyable items with <a:IBEgetMoney:780141666261663755>!', inline=False)
-    mll.add_field(name='----------------------------------', value='Next Command', inline=False)
-    mll.add_field(name='Beg (no field needed)', value='See if someone will donate <a:IBEgetMoney:780141666261663755> to you!', inline=False)
-    mll.add_field(name='----------------------------------', value='Next Command', inline=False)
-    mll.add_field(name='Deposit <amount>', value="Deposit all that <a:IBEgetMoney:780141666261663755> you've beed holding for a while", inline=False)
-    mll.add_field(name='----------------------------------', value='Next Command', inline=False)
-    mll.add_field(name='Rob <user>', value='Feeling greedy? Steal some <a:IBEgetMoney:780141666261663755> from another person.', inline=False)
-    mll.add_field(name='----------------------------------', value='Next Command', inline=False)
-    mll.add_field(name='Withdraw <amount>', value='Got no <a:IBEgetMoney:780141666261663755> in your wallet? Withdraw some!', inline=False)
-    mll.add_field(name='----------------------------------', value='Next Command', inline=False)
-    mll.add_field(name='Auto (no field needed)', value='Collects <a:IBEgetMoney:780141666261663755> without any commands!', inline=False)
-    mll.add_field(name='----------------------------------', value='Help Section', inline=False)
-    mll.set_thumbnail(url=f'{ctx.author.avatar_url}')
-    mll.set_author(name=f'Hello {ctx.author.name}')
-    mll.add_field(
-        name='Help', value='[] = not required, <> = required, () = note', inline=False)
-    mll.set_footer(text=f'Emoji shown = Currency used for commands')
-
-    await ctx.channel.send(embed=mll)
-
-
+bot.load_extension('jishaku')
 @bot.command(aliases=["lb"])
 async def leaderboard(ctx, x=1):
     users = await get_bank_data()
@@ -160,8 +132,8 @@ async def sell(ctx, item, amount=1):
         if res[1] == 3:
             await ctx.send(f"You don't have {item} in your bag.")
             return
-
-    await ctx.send(f"You just sold {amount} {item}.")
+    embed = discord.Embed(title='Success', description=f"You just sold {amount} {item}.")
+    await ctx.send(embed=embed)
 
 
 async def sell_this(user, item_name, amount, price=None):
@@ -340,15 +312,15 @@ async def beg(ctx):
 
     fine = random.randrange(500)
 
-    c1 = f'You found {earnings} <a:IBEgetMoney:780141666261663755> on the ground'
+    c1 = f'found {earnings} <a:IBEgetMoney:780141666261663755> on the ground'
 
-    c2 = f"You found {earnings} <a:IBEgetMoney:780141666261663755> in a bin"
+    c2 = f"{earnings} <a:IBEgetMoney:780141666261663755> in a bin"
 
-    c3 = f'You were caught stealing {earnings} <a:IBEgetMoney:780141666261663755> from a wallet\nThe police have given you a fine of {fine} <a:IBEgetMoney:780141666261663755>'
+    c3 = f'were caught stealing {earnings} <a:IBEgetMoney:780141666261663755> from a wallet\nThe police have given you a fine of {fine} <a:IBEgetMoney:780141666261663755>'
 
     pos = [c1, c2, c3]
-
-    await ctx.channel.send(random.choice(pos))
+    embed = discord.Embed(title='You ...', description=random.choice(pos))
+    await ctx.channel.send(embed=embed)
 
     if c1:
         users[str(user.id)]['wallet'] += earnings
@@ -362,54 +334,47 @@ async def beg(ctx):
 
 @bot.command()
 async def work(ctx):
-    job1 = 'Policeman'
-    job2 = 'Builder'
+    from disputils import BotEmbedPaginator, BotConfirmation, BotMultipleChoice
+    multiple_choice = BotMultipleChoice(ctx, ['Policeman', 'Builder', 'Banker', 'Soldier', 'Doctor'], "What job would you like to do?")
+    await multiple_choice.run()
 
-    job1_image = ':police_officer:'
-    job2_image = ':construction_worker:'
-
-    job1_earnings = random.randrange(5000, 10000)
-    job2_earnings = random.randrange(10000, 15000)
-
-    salary = discord.Embed(
-        title='Job offer 1', description='React with 👍', color=discord.Color.dark_green())
-    salary1 = discord.Embed(
-        title='Job offer 2', description='React with 👍', color=discord.Color.dark_green())
-
-    salary.add_field(name=f'{job1}', value=f'{job1_image}', inline=False)
-    salary1.add_field(name=f'{job2}', value=f'{job2_image}', inline=False)
-
+    await multiple_choice.quit()
+    multiple_choice.choice
+    reactions = {'Policeman':'👮', 'Builder':'👷', 'Banker':'🏦', 'Soldier':'🎖️', 'Doctor':'⛑️'}
     channel = ctx.message.channel
-
-    await channel.send(embed=salary)
-    await channel.send(embed=salary1)
-
     await open_account(ctx.author)
-
+    embed = discord.Embed()
+    embed.add_field(name=f'Work for {multiple_choice.choice}', value=f'React with {reactions[multiple_choice.choice]} to recieve your money!')
+    await ctx.send(embed=embed)
     users = await get_bank_data()
 
     def check(reaction, user):
-        return user == ctx.message.author and str(reaction.emoji) == '👍'
-
+        #print(str(reaction.emoji))
+        #print(str(reaction.emoji))
+        return user == ctx.message.author and str(reaction.emoji) == reactions[multiple_choice.choice]
+    job1_earnings = random.randint(0, 5000)
     try:
+        #await channel.send(f'{str(reaction.emoji)}')
         await bot.wait_for('reaction_add', timeout=60.0, check=check)
     except asyncio.TimeoutError:
         await asyncio.sleep(1)
         await channel.send('Your employer was busy and had to go')
     else:
+        a = []
+        # for i in range(200):
+        #     a.append('Alive')
+        a.append('Dead')
+        if random.choice(a) == 'Dead':
+            b = random.randint(-50000, -1000)
+            users[str(ctx.author.id)]['wallet'] += b
+            embed1 = discord.Embed(title='Sadly',
+                                   description=f'You died, and lost {b} <a:IBEgetMoney:780141666261663755>')
+            await channel.send(embed=embed1)
+            return
         await asyncio.sleep(1)
-        await channel.send(f'Well done! You earned `{job1_earnings}` <a:IBEgetMoney:780141666261663755> .Your employer = `The local Police Force`')
+        embed1 = discord.Embed(title='Success', description=f'Well done! You earned `{job1_earnings}` <a:IBEgetMoney:780141666261663755> .Your employer = `{multiple_choice.choice}`')
+        await channel.send(embed=embed1)
         users[str(ctx.author.id)]['wallet'] += job1_earnings
-
-    try:
-        await bot.wait_for('reaction_add', timeout=60.0, check=check)
-    except asyncio.TimeoutError:
-        await asyncio.sleep(1)
-        await channel.send('Your employer was busy and had to go')
-    else:
-        await asyncio.sleep(1)
-        await channel.send(f'Well done! You earned `{job2_earnings}` <a:IBEgetMoney:780141666261663755> .Your employer = `The local Construction Team`')
-        users[str(ctx.author.id)]['wallet'] += job2_earnings
 
     with open('bank.json', 'w') as f:
         json.dump(users, f)
@@ -434,8 +399,8 @@ async def withdraw(ctx, amount=None):
 
     await update_bank(ctx.message.author, amount)
     await update_bank(ctx.message.author, -1 * amount, 'bank')
-
-    await ctx.send(f"You withdrew {amount} <a:IBEgetMoney:780141666261663755> from your Bank")
+    embed = discord.Embed(title='Success', description=f"You withdrew {amount} <a:IBEgetMoney:780141666261663755> from your Bank")
+    await ctx.send(embed=embed)
 
 
 @bot.command()
@@ -457,8 +422,8 @@ async def deposit(ctx, amount=None):
 
     await update_bank(ctx.message.author, -1 * amount)
     await update_bank(ctx.message.author, amount, 'bank')
-
-    await ctx.send(f"You deposited {amount} <a:IBEgetMoney:780141666261663755> to your Bank")
+    embed = discord.Embed(title='Success', description=f"You deposited {amount} <a:IBEgetMoney:780141666261663755> to your Bank")
+    await ctx.send(embed=embed)
 
 
 @bot.command()
@@ -483,8 +448,8 @@ async def transfer(ctx, member: discord.Member, amount=None):
 
     await update_bank(ctx.message.author, -1 * amount, 'bank')
     await update_bank(member, amount, 'bank')
-
-    await ctx.send(f"You donated {amount} <a:IBEgetMoney:780141666261663755> to {member.mention}")
+    embed = discord.Embed(title='Success', description=f"You donated {amount} <a:IBEgetMoney:780141666261663755> to {member.mention}")
+    await ctx.send(embed=embed)
 
 
 @bot.command()
@@ -514,16 +479,24 @@ async def slots(ctx, amount=None):
 
     await ctx.send(str(final))
 
-    if final[0] == final[1] or final[0] == final[1] or final[1] == final[2]:
+    if final == [":<a:IBEgetMoney:780141666261663755>:", ":x:", ":<a:IBEgetMoney:780141666261663755>:"] or final == [
+        ":<a:IBEgetMoney:780141666261663755>:", ":<a:IBEgetMoney:780141666261663755>:", ":x:"] or final == [
+         ":x:", ":<a:IBEgetMoney:780141666261663755>:", ":<a:IBEgetMoney:780141666261663755>:"] or final == [
+         ":<a:IBEgetMoney:780141666261663755>:", ":<a:IBEgetMoney:780141666261663755>:", ":<a:IBEgetMoney:780141666261663755>:"]:
         await update_bank(ctx.message.author, 2 * amount)
-        await ctx.send('You won `2x` the amount of money!')
+        embed = discord.Embed(title='Well done!', description='You won `2x` the amount of money!')
+        await ctx.send(embed=embed)
     else:
         await update_bank(ctx.message.author, -1 * amount)
-        await ctx.send('You lost the same amount of money that you gambled!')
+        embed = discord.Embed(title='Oh no...', description='You lost the same amount of money that you gambled!')
+        await ctx.send(embed=embed)
 
 
 @bot.command()
 async def rob(ctx, member: discord.Member):
+    #print('HI')
+    #print(member)
+    #await ctx.send(member)
     await open_account(ctx.message.author)
     await open_account(member)
 
@@ -532,13 +505,13 @@ async def rob(ctx, member: discord.Member):
     if b[0] < 100:
         await ctx.send(f"This member is not worth robbing!")
         return
-
-    earnings = random.randrange(0, b[0])
+    print(b[0])
+    earnings = random.randint(0, int(b[0]))
 
     await update_bank(ctx.message.author, earnings)
-    await update_bank(member, -1 * earnings, 'bank')
-
-    await ctx.send(f"You robbed {member.mention} and received {earnings} <a:IBEgetMoney:780141666261663755> into your wallet!")
+    await update_bank(member, -1 * earnings, 'wallet')
+    embed = discord.Embed(title='Success!', description=f"You robbed {member.mention} and received {earnings} <a:IBEgetMoney:780141666261663755> into your wallet!")
+    await ctx.send(embed=embed)
 
 
 async def open_account(user):
@@ -606,6 +579,11 @@ async def on_guild_join(guild):
 @bot.command(name='changeprefix', aliases=['prefix'], description='<original prefix>changeprefix <new prefix>')
 @commands.has_permissions(administrator=True)
 async def changeprefix(ctx, prefix):
+    embed = discord.Embed(colour=discord.Color.green())
+    embed.add_field(name='Success', value=f'{ctx.author.mention} you changed the server prefix to `{prefix}`')
+
+
+    await ctx.send(embed=embed)
     with open(r"prefixes.json", "r") as f:
         prefixes = json.load(f)
 
@@ -614,28 +592,27 @@ async def changeprefix(ctx, prefix):
     with open(r"prefixes.json", "w") as f:
         json.dump(prefixes, f)
 
-    await ctx.channel.send(f'The prefix was changed to {prefix}')
+    #await ctx.channel.send(f'The prefix was changed to {prefix}')
 
-@bot.event
-async def on_message(msg):
-    try:
-
-        if msg.mentions[0] == bot.user:
-
-            with open(r"prefixes.json", "r") as f:
-                prefixes = json.load(f)
-
-            pre = prefixes[str(msg.guild.id)]
-
-            await msg.channel.send(f'My prefix for this server is ***`{pre}`***')
-            bot.process_commands(msg)
-
-    except:
-        pass
-        await bot.process_commands(msg)
+# @bot.event
+# async def on_message(msg):
+#     try:
+#
+#         if msg.mentions[0] == bot.user:
+#
+#             with open(r"prefixes.json", "r") as f:
+#                 prefixes = json.load(f)
+#
+#             pre = prefixes[str(msg.guild.id)]
+#
+#             await msg.channel.send(f'My prefix for this server is ***`{pre}`***')
+#             bot.process_commands(msg)
+#
+#     except:
+#         pass
+#         await bot.process_commands(msg)
 
 # Running code via token
-keep_alive()
 
 # extensions = ['Help']#, 'Moderation', 'Owner']
 
